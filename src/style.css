@@ -1,0 +1,22 @@
+*, *::before, *::after { box-sizing: border-box; }
+body { margin: 0; font-family: system-ui, sans-serif; background: #111; color: #eee; }
+.app { max-width: 720px; margin: 0 auto; padding: 1rem; }
+header h1 { font-size: 2rem; margin-bottom: 0.25rem; }
+.audio-upload { border: 2px dashed #444; border-radius: 8px; padding: 2rem; text-align: center; cursor: pointer; margin-bottom: 1rem; }
+.audio-upload.dragging { border-color: #0af; background: #001820; }
+.accepted-formats { font-size: 0.8rem; color: #888; margin: 0.5rem 0 0; }
+.control-panel section { margin-bottom: 1.25rem; }
+.control-panel h3 { margin: 0 0 0.5rem; font-size: 0.9rem; text-transform: uppercase; color: #aaa; }
+.control-panel label { display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.4rem; font-size: 0.9rem; }
+.control-panel input[type="number"], .control-panel input[type="range"] { flex: 1; }
+.color-picker { display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.4rem; }
+.generate-btn { display: block; width: 100%; padding: 0.75rem; font-size: 1rem; background: #0af; color: #000; border: none; border-radius: 6px; cursor: pointer; margin: 1rem 0; font-weight: 600; }
+.generate-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.download-btn { display: block; width: 100%; margin-top: 0.75rem; padding: 0.6rem 1.5rem; background: #0c6; color: #000; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; }
+.progress-bar-wrap { margin: 0.75rem 0; }
+.progress-bar { height: 8px; background: #333; border-radius: 4px; overflow: hidden; }
+.progress-bar__fill { height: 100%; background: #0af; transition: width 0.25s ease; }
+.progress-bar__label { font-size: 0.85rem; color: #aaa; display: block; margin-top: 0.25rem; }
+.error { color: #f55; background: #200; padding: 0.5rem 0.75rem; border-radius: 4px; }
+.video-preview { margin-top: 1rem; }
+.video-preview video { width: 100%; border-radius: 6px; }
