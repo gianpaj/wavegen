@@ -1,0 +1,3 @@
+[test]
+# Run only src/ test files; exclude Playwright E2E specs
+root = "./src"
