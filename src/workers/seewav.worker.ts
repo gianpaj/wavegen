@@ -109,7 +109,7 @@ async function generate(file: File, opts: SeewavOptions): Promise<ArrayBuffer> {
   }
 
   if (supportsWebCodecs()) {
-    return encodeWebCodecs(pngBlobs, opts, sr);
+    return encodeWebCodecs(pngBlobs, opts, file);
   }
   return encodeWithFFmpeg(pngBlobs, opts, file);
 }
@@ -139,7 +139,8 @@ async function encodeWithFFmpeg(pngBlobs: Blob[], opts: SeewavOptions, audioFile
   return outData.buffer;
 }
 
-async function encodeWebCodecs(pngBlobs: Blob[], opts: SeewavOptions, sr: number): Promise<ArrayBuffer> {
+async function encodeWebCodecs(pngBlobs: Blob[], opts: SeewavOptions, audioFile: File): Promise<ArrayBuffer> {
+  // Step 1: encode video frames with WebCodecs into a video-only MP4
   const { Muxer, ArrayBufferTarget } = await import("mp4-muxer");
   const target = new ArrayBufferTarget();
   const muxer = new Muxer({
@@ -175,7 +176,24 @@ async function encodeWebCodecs(pngBlobs: Blob[], opts: SeewavOptions, sr: number
   }
   await encoder.flush();
   muxer.finalize();
-  return target.buffer;
+
+  if (!opts.includeAudio) return target.buffer;
+
+  // Step 2: mux audio into the video-only MP4 using ffmpeg.wasm (already loaded).
+  // -c:v copy avoids re-encoding the video track.
+  self.postMessage({ type: "progress", phase: "encode", pct: 96 } satisfies WorkerOutMessage);
+  await ffmpeg.writeFile("video_only.mp4", new Uint8Array(target.buffer));
+  await ffmpeg.writeFile("audio_in", await fetchFile(audioFile));
+
+  const muxArgs = ["-y", "-i", "video_only.mp4", "-i", "audio_in"];
+  if (opts.seek != null) muxArgs.push("-ss", String(opts.seek));
+  if (opts.duration != null) muxArgs.push("-t", String(opts.duration));
+  muxArgs.push("-c:v", "copy", "-c:a", "aac", "-shortest", "out_final.mp4");
+
+  await ffmpeg["exec"](muxArgs);
+
+  const outData = await ffmpeg.readFile("out_final.mp4") as Uint8Array;
+  return outData.buffer;
 }
 
 function mixDown(ch0: Float32Array, ch1: Float32Array): Float32Array {
