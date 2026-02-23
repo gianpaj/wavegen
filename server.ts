@@ -55,6 +55,8 @@ const workerBuild = await Bun.build({
   sourcemap: "inline",
   define: {
     "process.env.NODE_ENV": JSON.stringify("development"),
+    "FFMPEG_BASE": '"/dist/ffmpeg/"',
+    "FFMPEG_WASM_URL": '"/dist/ffmpeg/ffmpeg-core.wasm"',
   },
 });
 

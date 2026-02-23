@@ -6,19 +6,21 @@ import { envelope, sigmoid, interpole } from "../lib/dsp";
 import { buildFrameEnvs, drawEnv } from "../lib/draw";
 import { supportsWebCodecs } from "../lib/encode";
 
+// FFMPEG_BASE and FFMPEG_WASM_URL are injected at build time via Bun.build `define`.
+// Dev:  FFMPEG_BASE="/dist/ffmpeg/",  FFMPEG_WASM_URL="/dist/ffmpeg/ffmpeg-core.wasm"
+// Prod: FFMPEG_BASE="/ffmpeg/",       FFMPEG_WASM_URL=CDN (avoids 25 MB CF Pages limit)
+declare const FFMPEG_BASE: string;
+declare const FFMPEG_WASM_URL: string;
+
 const ffmpeg = new FFmpeg();
 let ffmpegLoaded = false;
 
 async function ensureFFmpeg() {
   if (!ffmpegLoaded) {
-    // Use locally hosted core files and the ffmpeg worker script so the app
-    // works offline and doesn't depend on unpkg.com.  The server copies these
-    // files into /dist/ffmpeg/ at startup.
-    const base = new URL("/dist/ffmpeg/", self.location.href).href;
     await ffmpeg.load({
-      classWorkerURL: base + "worker.js",
-      coreURL: base + "ffmpeg-core.js",
-      wasmURL: base + "ffmpeg-core.wasm",
+      classWorkerURL: FFMPEG_BASE + "worker.js",
+      coreURL: FFMPEG_BASE + "ffmpeg-core.js",
+      wasmURL: FFMPEG_WASM_URL,
     });
     ffmpegLoaded = true;
   }

@@ -13,7 +13,7 @@
  *     ffmpeg/
  *       worker.js
  *       ffmpeg-core.js
- *       ffmpeg-core.wasm
+ *       (ffmpeg-core.wasm loaded from CDN at runtime — 30.7 MB exceeds CF Pages limit)
  */
 
 import { copyFileSync, mkdirSync } from "fs";
@@ -26,7 +26,8 @@ const FFMPEG_ESM  = "./node_modules/@ffmpeg/ffmpeg/dist/esm";
 const FFMPEG_CORE = "./node_modules/@ffmpeg/core/dist/esm";
 
 copyFileSync(`${FFMPEG_CORE}/ffmpeg-core.js`,   "./dist/ffmpeg/ffmpeg-core.js");
-copyFileSync(`${FFMPEG_CORE}/ffmpeg-core.wasm`, "./dist/ffmpeg/ffmpeg-core.wasm");
+// ffmpeg-core.wasm (30.7 MB) exceeds Cloudflare Pages' 25 MB file limit.
+// It is loaded at runtime from the CDN (see FFMPEG_WASM_URL define below).
 try { copyFileSync(`${FFMPEG_CORE}/ffmpeg-core.worker.js`, "./dist/ffmpeg/ffmpeg-core.worker.js"); } catch { /* optional */ }
 
 const ffmpegWorkerBuild = await Bun.build({
@@ -65,7 +66,11 @@ const workerBuild = await Bun.build({
   format: "esm",
   splitting: false,
   minify: true,
-  define: { "process.env.NODE_ENV": '"production"' },
+  define: {
+    "process.env.NODE_ENV": '"production"',
+    "FFMPEG_BASE": '"/ffmpeg/"',
+    "FFMPEG_WASM_URL": '"https://unpkg.com/@ffmpeg/core@0.12.10/dist/esm/ffmpeg-core.wasm"',
+  },
 });
 if (!workerBuild.success) {
   for (const log of workerBuild.logs) console.error(log);
