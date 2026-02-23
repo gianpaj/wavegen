@@ -1,8 +1,12 @@
 {
-  "name": "seewav-wasm",
+  "name": "wavegen",
   "module": "index.ts",
   "type": "module",
   "private": true,
+  "scripts": {
+    "dev": "bun server.ts",
+    "build": "bun build.ts"
+  },
   "devDependencies": {
     "@playwright/test": "^1.58.2",
     "@types/bun": "^1.3.9",
