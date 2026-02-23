@@ -8,6 +8,7 @@ Generate animated waveform MP4 videos from audio files — entirely in the brows
 > Most of the code was written Claude Code.
 > See [docs/plans/2026-02-23-seewav-wasm.md](docs/plans/2026-02-23-seewav-wasm.md) for initial plan and design doc [docs/plans/2026-02-23-seewav-wasm-design.md](docs/plans/2026-02-23-seewav-wasm-design.md)
 
+[[seewave-output.mp4](demo output)
 
 ## About
 
