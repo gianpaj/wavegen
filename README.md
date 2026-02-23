@@ -4,6 +4,11 @@ Generate animated waveform MP4 videos from audio files — entirely in the brows
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
+> [!NOTE]  
+> Most of the code was written Claude Code.
+> See [docs/plans/2026-02-23-seewav-wasm.md](docs/plans/2026-02-23-seewav-wasm.md) for initial plan and design doc [docs/plans/2026-02-23-seewav-wasm-design.md](docs/plans/2026-02-23-seewav-wasm-design.md)
+
+
 ## About
 
 wavegen is a browser-based port of [seewav](https://github.com/adefossez/seewav). Upload an audio file, customize the look, and export a waveform animation video — no server, no installs, no data leaves your machine.
