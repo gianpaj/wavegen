@@ -43,7 +43,7 @@ async function generate(file: File, opts: SeewavOptions): Promise<ArrayBuffer> {
   const decodeArgs = ["-i", "input"];
   if (opts.seek != null) decodeArgs.push("-ss", String(opts.seek));
   if (opts.duration != null) decodeArgs.push("-t", String(opts.duration));
-  decodeArgs.push("-ac", "2", "-f", "f32le", "-acodec", "pcm_f32le", "pcm.raw");
+  decodeArgs.push("-ac", "2", "-ar", "44100", "-f", "f32le", "-acodec", "pcm_f32le", "pcm.raw");
   await ffmpeg["exec"](decodeArgs);
 
   const rawData = await ffmpeg.readFile("pcm.raw") as Uint8Array;
