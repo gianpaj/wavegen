@@ -11,7 +11,15 @@ let ffmpegLoaded = false;
 
 async function ensureFFmpeg() {
   if (!ffmpegLoaded) {
-    await ffmpeg.load();
+    // Use locally hosted core files and the ffmpeg worker script so the app
+    // works offline and doesn't depend on unpkg.com.  The server copies these
+    // files into /dist/ffmpeg/ at startup.
+    const base = new URL("/dist/ffmpeg/", self.location.href).href;
+    await ffmpeg.load({
+      classWorkerURL: base + "worker.js",
+      coreURL: base + "ffmpeg-core.js",
+      wasmURL: base + "ffmpeg-core.wasm",
+    });
     ffmpegLoaded = true;
   }
 }

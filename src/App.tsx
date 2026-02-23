@@ -6,12 +6,20 @@ import VideoPreview from "./components/VideoPreview";
 import { useSeewav } from "./composables/useSeewav";
 import type { SeewavOptions } from "./types/seewav";
 
+const DEFAULT_OPTIONS: SeewavOptions = {
+  fgColor: [0.03, 0.6, 0.3],
+  fgColor2: [0.5, 0.3, 0.6],
+  bgColor: [0, 0, 0],
+  bars: 50, speed: 4, time: 0.4, oversample: 4, stereo: false,
+  width: 480, height: 300, rate: 60, includeAudio: true,
+};
+
 export default defineComponent({
   name: "App",
   setup() {
     const { isGenerating, progress, progressPhase, resultUrl, error, generate } = useSeewav();
     const audioFile = ref<File | null>(null);
-    const options = ref<SeewavOptions | null>(null);
+    const options = ref<SeewavOptions>({ ...DEFAULT_OPTIONS });
 
     return () => (
       <div class="app">
@@ -30,7 +38,7 @@ export default defineComponent({
             class="generate-btn"
             disabled={!audioFile.value || isGenerating.value}
             onClick={() => {
-              if (audioFile.value && options.value) generate(audioFile.value, options.value);
+              if (audioFile.value) generate(audioFile.value, options.value);
             }}
           >
             {isGenerating.value ? "Generating…" : "Generate"}

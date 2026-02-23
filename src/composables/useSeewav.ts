@@ -50,7 +50,10 @@ export function useSeewav() {
       isGenerating.value = false;
     };
 
-    worker.postMessage({ type: "generate", file, options });
+    // Structured clone cannot clone Vue reactive Proxies, so we serialise
+    // options to a plain object first.
+    const plainOptions: SeewavOptions = JSON.parse(JSON.stringify(options));
+    worker.postMessage({ type: "generate", file, options: plainOptions });
   }
 
   function cancel() {
